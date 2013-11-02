@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "FFBroxy.h"
+#include "libusb.h"
 #include <shellapi.h>
 
 #define MAX_LOADSTRING 100
@@ -101,6 +102,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    HWND hWnd;
    HICON hMainIcon;
+   int usbinit;
 
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -126,6 +128,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    nidApp.uCallbackMessage = WM_USER_SHELLICON;
    LoadString(hInstance, IDS_APP_TITLE, nidApp.szTip, MAX_LOADSTRING);
    Shell_NotifyIcon(NIM_ADD, &nidApp);
+
+   usbinit = initlibusb();
 
    return TRUE;
 }
@@ -174,6 +178,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case IDM_EXIT:
+			closelibusb();
 			Shell_NotifyIcon(NIM_DELETE, &nidApp);
 			DestroyWindow(hWnd);
 			break;

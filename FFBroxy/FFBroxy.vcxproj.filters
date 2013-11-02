@@ -30,12 +30,21 @@
     <ClInclude Include="FFBroxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libusb-win32-bin-1.2.6.0\include\lusb0_usb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libusb.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FFBroxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
