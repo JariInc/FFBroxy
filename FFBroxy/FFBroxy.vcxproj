@@ -84,6 +84,8 @@
   <ItemGroup>
     <ClInclude Include="..\libusb-win32-bin-1.2.6.0\include\lusb0_usb.h" />
     <ClInclude Include="FFBroxy.h" />
+    <ClInclude Include="iracing.h" />
+    <ClInclude Include="irsdk_defines.h" />
     <ClInclude Include="libusb.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -91,6 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FFBroxy.cpp" />
+    <ClCompile Include="iracing.cpp" />
+    <ClCompile Include="irsdk_utils.cpp" />
     <ClCompile Include="libusb.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

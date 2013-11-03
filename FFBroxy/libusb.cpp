@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "libusb.h"
 
-usb_dev_handle *dev = NULL;
+usb_dev_handle *initUSB() {
+	usb_init(); /* initialize the library */
+	usb_find_busses(); /* find all busses */
+	usb_find_devices(); /* find all connected devices */
 
-usb_dev_handle *open_dev(void)
-{
 	struct usb_bus *bus;
 	struct usb_device *dev;
 
@@ -22,23 +23,12 @@ usb_dev_handle *open_dev(void)
 	return NULL;
 }
 
-int initlibusb() {
-	usb_init(); /* initialize the library */
-	usb_find_busses(); /* find all busses */
-	usb_find_devices(); /* find all connected devices */
-
-	if (!(dev = open_dev()))
-		return 0;
-	else
-		return 1;
-}
-
-void closelibusb() {
+void closeUSB(usb_dev_handle *dev) {
 	if (dev != NULL)
 		usb_close(dev);
 }
 
-int sendPacket(int request, int value) {
+int sendUSBPacket(usb_dev_handle *dev, int request, int value) {
 	char tmp[1];
 	int ret;
 	if (dev != NULL)

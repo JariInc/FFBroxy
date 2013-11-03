@@ -5,10 +5,9 @@
 	#include <lusb0_usb.h>
 
 // Prototypes:
-	usb_dev_handle *open_dev(void);
-	int initlibusb();
-	void closelibusb();
-	int sendPacket(int request, int value);
+	usb_dev_handle *initUSB();
+	void closeUSB(usb_dev_handle *dev);
+	int sendUSBPacket(usb_dev_handle *dev, int request, int value);
 
 // Macros:
 	// Device vendor and product id.

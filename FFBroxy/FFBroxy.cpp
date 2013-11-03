@@ -4,7 +4,10 @@
 #include "stdafx.h"
 #include "FFBroxy.h"
 #include "libusb.h"
+#include "iracing.h"
 #include <shellapi.h>
+#include <stdio.h>
+
 
 #define MAX_LOADSTRING 100
 #define	WM_USER_SHELLICON WM_USER + 1
@@ -15,6 +18,10 @@ NOTIFYICONDATA nidApp;							// systray icon
 HMENU hPopMenu;									// systray context menu
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+
+// Threading variables
+DWORD   dwProxyThreadId;
+HANDLE  hProxyThread;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -102,7 +109,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    HWND hWnd;
    HICON hMainIcon;
-   int usbinit;
 
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -116,10 +122,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    hMainIcon = LoadIcon(hInstance, (LPCTSTR)MAKEINTRESOURCE(IDI_FFBROXY));
 
-   //ShowWindow(hWnd, nCmdShow);
-   //UpdateWindow(hWnd);
-   //ShowWindow(hWnd, SW_HIDE);
-
    nidApp.cbSize = sizeof(NOTIFYICONDATA); // sizeof the struct in bytes 
    nidApp.hWnd = (HWND)hWnd;              //handle of the window which will process this app. messages 
    nidApp.uID = IDI_FFBROXY;           //ID of the icon that willl appear in the system tray 
@@ -129,7 +131,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    LoadString(hInstance, IDS_APP_TITLE, nidApp.szTip, MAX_LOADSTRING);
    Shell_NotifyIcon(NIM_ADD, &nidApp);
 
-   usbinit = initlibusb();
+   hProxyThread = CreateThread(
+	   NULL,					// default security attributes
+	   0,						// use default stack size  
+	   proxyWorker,				// thread function name
+	   NULL,					// argument to thread function 
+	   0,						// use default creation flags 
+	   &dwProxyThreadId);		// returns the thread identifier 
 
    return TRUE;
 }
@@ -167,6 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			SetForegroundWindow(hWnd);
 			TrackPopupMenu(hPopMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN, lpClickPoint.x, lpClickPoint.y, 0, hWnd, NULL);
+
 			return TRUE;
 
 		}
@@ -178,7 +187,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case IDM_EXIT:
-			closelibusb();
+			CloseHandle(hProxyThread);
 			Shell_NotifyIcon(NIM_DELETE, &nidApp);
 			DestroyWindow(hWnd);
 			break;
@@ -192,5 +201,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+	return 0;
+}
+
+DWORD WINAPI proxyWorker(LPVOID lpParam)
+{
+	usb_dev_handle *dev = NULL;
+	float ffb;
+	INT16 ffbwheel;
+	FILE *file;
+
+	fopen_s(&file, "ffb.log", "w");
+
+	dev = initUSB();
+	initIRacing();
+
+	while (true) {
+		ffb = getFFBIRacing();
+		ffbwheel = (INT16)(1024.0f * ffb / 20.0f);
+		sendUSBPacket(dev, 0x00, ffbwheel);
+
+		fprintf(file, "%g %i\n", ffb, ffbwheel);
+		fflush(file);
+	}
+
+
+	fclose(file);
 	return 0;
 }

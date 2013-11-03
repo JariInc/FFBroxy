@@ -36,6 +36,12 @@
     <ClInclude Include="libusb.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="irsdk_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iracing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libusb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="iracing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="irsdk_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
