@@ -218,8 +218,8 @@ DWORD WINAPI proxyWorker(LPVOID lpParam)
 
 	while (true) {
 		ffb = getFFBIRacing();
-		ffbwheel = (INT16)(1024.0f * ffb / 20.0f);
-		sendUSBPacket(dev, 0x00, ffbwheel);
+		ffbwheel = (INT16)(1024.0f * ffb / 10.0f);
+		sendUSBPacket(dev, 0x64, ffbwheel);
 
 		fprintf(file, "%g %i\n", ffb, ffbwheel);
 		fflush(file);
