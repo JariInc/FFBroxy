@@ -209,23 +209,23 @@ DWORD WINAPI proxyWorker(LPVOID lpParam)
 	usb_dev_handle *dev = NULL;
 	float ffb;
 	INT16 ffbwheel;
-	FILE *file;
+	//FILE *file;
 
-	fopen_s(&file, "ffb.log", "w");
+	//fopen_s(&file, "ffb.log", "w");
 
 	dev = initUSB();
 	initIRacing();
 
 	while (true) {
 		ffb = getFFBIRacing();
-		ffbwheel = (INT16)(1024.0f * ffb / 10.0f);
+		ffbwheel = (INT16)(2600.0f * ffb / 8.0f);
 		sendUSBPacket(dev, 0x64, ffbwheel);
 
-		fprintf(file, "%g %i\n", ffb, ffbwheel);
-		fflush(file);
+		//fprintf(file, "%g %i\n", ffb, ffbwheel);
+		//fflush(file);
 	}
 
 
-	fclose(file);
+	//fclose(file);
 	return 0;
 }
